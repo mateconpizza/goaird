@@ -9,9 +9,13 @@ linters:
   enable:
     - asasalint
     - bidichk
+    - bodyclose
+    - canonicalheader
     - dogsled
     - dupl
+    - dupword
     - err113
+    - decorder
     - errcheck
     - errname
     - errorlint
