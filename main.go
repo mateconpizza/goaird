@@ -51,6 +51,10 @@ func main() {
 		return
 	}
 
+	if app.Cfg.Server.Address != "" {
+		app.CmdArgs.Addr = app.Cfg.Server.Address
+	}
+
 	mux, err := app.SetupRoutes()
 	if err != nil {
 		slog.Error("main", slog.String("error", err.Error()))

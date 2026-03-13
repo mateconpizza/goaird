@@ -129,9 +129,10 @@ func defaultConfig() *Config {
 				Method:             "POST",
 				RateLimitPerMinute: 30,
 				MaxSizeMB:          50,
-				Destination:        "~/dls/goairdrop/upload",
-				FilenameStrategy:   "original",
-				Notify:             true,
+				// FIX: Use `XDG_DATA_HOME`
+				Destination:      "~/dls/goairdrop/upload",
+				FilenameStrategy: "original",
+				Notify:           true,
 			},
 		},
 	}

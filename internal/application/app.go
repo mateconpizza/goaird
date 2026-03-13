@@ -100,9 +100,9 @@ func (a *App) SetupRoutes() (*http.ServeMux, error) {
 	mux := http.NewServeMux()
 
 	// temporary
-	// mux.HandleFunc("/debug-test", func(w http.ResponseWriter, r *http.Request) {
-	// 	_, _ = w.Write([]byte("ok"))
-	// })
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("ok"))
+	})
 
 	slog.Info("main:hooks", slog.Int("processing hooks", len(a.Cfg.Hooks)))
 
