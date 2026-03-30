@@ -1,4 +1,4 @@
-package webhook
+package hook
 
 import (
 	"context"
@@ -13,50 +13,52 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mateconpizza/goairdrop/internal/cli"
 	"github.com/mateconpizza/goairdrop/internal/notify"
 )
 
-func HandleCommandHook(h *Hook) http.HandlerFunc {
+func HandleCommandHook(h *Hook, logger *slog.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != h.Method {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
 
 		var payload map[string]any
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-			http.Error(w, "Bad JSON", http.StatusBadRequest)
+			http.Error(w, "bad JSON", http.StatusBadRequest)
 			return
 		}
 
 		action, _ := payload["action"].(string)
 		if !slices.Contains(h.AllowedActions, action) {
-			http.Error(w, "Forbidden action", http.StatusForbidden)
+			logger.Error("commandHook", "action", action, "allowed", strings.Join(h.AllowedActions, ","))
+			http.Error(w, "forbidden action", http.StatusForbidden)
 			return
 		}
 
 		resolvedArgs := resolveTemplates(h.CommandTemplate.Args, payload)
-
 		ctx, cancel := context.WithTimeout(
 			context.Background(),
 			time.Duration(h.CommandTemplate.TimeoutSeconds)*time.Second)
 		defer cancel()
 
-		slog.Info("commandHook", slog.String("command", h.CommandTemplate.Command))
-		slog.Info("commandHook", slog.String("resolvedArgs", strings.Join(resolvedArgs, " ")))
-		cmd := exec.CommandContext(ctx, h.CommandTemplate.Command, resolvedArgs...)
+		command := cli.ExpandUser(h.CommandTemplate.Command)
+		logger.Info("commandHook", "command", command)
+		logger.Info("commandHook", "resolvedArgs", strings.Join(resolvedArgs, " "))
+		cmd := exec.CommandContext(ctx, command, resolvedArgs...)
 		err := cmd.Run()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		msg := fmt.Sprintf("%s: %s", action, strings.Join(resolvedArgs, " "))
-
+		msg := fmt.Sprintf("%s %s", command, strings.Join(resolvedArgs, " "))
 		if h.Notify {
-			slog.Info("commandHook: notification to user", slog.String("message", msg))
+			logger.Info("commandHook: notification to user", "message", msg)
 			t := notify.New(
 				notify.WithContext(ctx),
+				notify.WithSummary(h.Name),
 				notify.WithBody(msg),
 				notify.WithAppName("goaird"),
 				notify.WithIcon(notify.IconInfo),
@@ -65,14 +67,14 @@ func HandleCommandHook(h *Hook) http.HandlerFunc {
 			)
 
 			if _, err := t.Send(); err != nil {
-				slog.Error("Failed to send notification", slog.String("error", err.Error()))
+				logger.Error("Failed to send notification", "error", err.Error())
 			}
 		}
 
 		resp := Response{Success: true, Message: msg}
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			slog.Error("Error encoding response", slog.String("error", err.Error()))
+			logger.Error("Error encoding response", "error", err.Error())
 		}
 	}
 }

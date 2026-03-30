@@ -1,4 +1,4 @@
-package webhook
+package hook
 
 import (
 	"context"
@@ -22,10 +22,11 @@ type Response struct {
 type Webhook struct {
 	*http.Server
 	isActive int32 // use atomic operations
+	logger   *slog.Logger
 }
 
 // New creates a new Webhook instance with custom settings and handler.
-func New(addr string, handler http.Handler) *Webhook {
+func New(addr string, handler http.Handler, logger *slog.Logger) *Webhook {
 	return &Webhook{
 		Server: &http.Server{
 			Addr:         addr,
@@ -34,6 +35,7 @@ func New(addr string, handler http.Handler) *Webhook {
 			WriteTimeout: 30 * time.Second,
 			IdleTimeout:  60 * time.Second,
 		},
+		logger: logger,
 	}
 }
 

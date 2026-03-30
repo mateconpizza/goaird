@@ -1,4 +1,4 @@
-package webhook_test
+package hook_test
 
 import (
 	"io"
@@ -9,6 +9,8 @@ import (
 
 //nolint:noctx //test
 func TestWebhookServer(t *testing.T) {
+	t.Parallel()
+
 	// Set up a test handler.
 	testHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
