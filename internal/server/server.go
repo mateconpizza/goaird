@@ -32,8 +32,8 @@ type serverOpt struct {
 	middlewares []Middleware
 }
 
-// WithMux sets the HTTP router/mux for the server.
-func WithMux(r *http.ServeMux) ServerOptFn {
+// WithRouter sets the HTTP router/mux for the server.
+func WithRouter(r *http.ServeMux) ServerOptFn {
 	return func(o *serverOpt) {
 		o.router = r
 	}

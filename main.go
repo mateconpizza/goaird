@@ -33,8 +33,8 @@ func run(app *application.App) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mux := http.NewServeMux()
-	mux, err := app.Routes(mux)
+	router := http.NewServeMux()
+	router, err := app.Routes(router)
 	if err != nil {
 		return err
 	}
@@ -44,11 +44,11 @@ func run(app *application.App) error {
 		if err != nil {
 			return err
 		}
-		ui.Routes(mux)
+		ui.Routes(router)
 	}
 
 	srv := server.New(
-		server.WithMux(mux),
+		server.WithRouter(router),
 		server.WithAddr(app.Cfg.Server.Addr),
 		server.WithLogger(app.Logger),
 		server.WithMiddleware([]server.Middleware{

@@ -119,6 +119,8 @@ func (a *App) Routes(mux *http.ServeMux) (*http.ServeMux, error) {
 		switch h.Type {
 		case hook.TypeCommand:
 			cmd := a.mgr.NewCommand(h)
+			// FIX: Check in server start if the default token is being use.
+			// - remove `middleware.Auth` DefaultToken param
 			mux.Handle(pattern, middleware.Auth(a.Cfg.Server.Token, a.DefaultToken, cmd, a.Logger))
 		case hook.TypeUpload:
 			cmd := a.mgr.NewUpload(h)
