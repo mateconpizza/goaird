@@ -65,7 +65,8 @@ func (m *Manager) NewCommand(h *Hook) http.HandlerFunc {
 			}
 		}
 
-		resp := Response{Success: true, Message: msg}
+		resp := newResponse(msg, true)
+		m.logger.Info(resp.Message)
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			m.logger.Error("Error encoding response", "error", err.Error())

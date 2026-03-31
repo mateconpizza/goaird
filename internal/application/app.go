@@ -127,6 +127,7 @@ func (a *App) Routes(mux *http.ServeMux) (*http.ServeMux, error) {
 	}
 
 	mux.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
 	})
 
@@ -148,14 +149,14 @@ func (a *App) Init() error {
 		parseLogger(a)
 	}
 
-	if exit, err := a.Dispatch(); exit {
+	if exit, err := a.dispatch(); exit {
 		cli.ErrAndExit(a.Name, err)
 	}
 
 	return nil
 }
 
-func (a *App) Dispatch() (bool, error) {
+func (a *App) dispatch() (bool, error) {
 	if a.Flag.version {
 		fmt.Fprint(a.Stdout, a.version())
 		return true, nil

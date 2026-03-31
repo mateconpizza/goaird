@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"slices"
 	"strconv"
 	"strings"
@@ -38,18 +39,20 @@ const (
 )
 
 type Hook struct {
-	Name               string   `json:"name"`
-	Type               HookType `json:"type"`
-	Endpoint           string   `json:"endpoint"`
-	Method             string   `json:"method"`
-	Destination        string   `json:"destination,omitempty"`
+	Name        string   `json:"name"`
+	Type        HookType `json:"type"`
+	Endpoint    string   `json:"endpoint"`
+	Method      string   `json:"method"`
+	Destination string   `json:"destination,omitempty"`
+
+	CommandTemplate *ExecConfig `json:"command_template,omitempty"`
+
+	// FIX: implement
+	AllowedActions     []string `json:"allowed_actions,omitempty"`
 	MaxSizeMB          int      `json:"max_size_mb,omitempty"`
 	RateLimitPerMinute int      `json:"rate_limit_per_minute,omitempty"`
 	FilenameStrategy   string   `json:"filename_strategy,omitempty"`
 	AllowedMIMETypes   []string `json:"allowed_mime_types,omitempty"`
-
-	CommandTemplate *ExecConfig `json:"command_template,omitempty"`
-	AllowedActions  []string    `json:"allowed_actions,omitempty"`
 
 	Notify   bool `json:"notify"`
 	Disabled bool `json:"disabled"`
@@ -117,11 +120,13 @@ func (h *Hook) String() string {
 	htype := typeColor.Wrap("["+string(h.Type)+"]", cli.Bold)
 
 	// Header: Hook[type] "Name" (METHOD /endpoint)
-	fmt.Fprintf(&sb, "Hook%s %q (%s %s)", htype, h.Name, h.Method, h.Endpoint)
+	fmt.Fprintf(&sb, "Hook%s %q (%s %s)", htype, h.Name, cli.Magenta.Wrap(h.Method, cli.Bold), h.Endpoint)
 
 	// Status badges
 	if h.Disabled {
 		sb.WriteString(cli.Red.Sprint(" [disabled]"))
+	} else {
+		sb.WriteString(cli.Green.Sprint(" [enabled]"))
 	}
 	if h.Notify {
 		sb.WriteString(cli.Blue.Sprint(" [notify]"))
@@ -230,4 +235,36 @@ func (m *Manager) PrettifyHooks() string {
 	}
 
 	return cli.Table(headers, rows, footer...)
+}
+
+// getClientIP returns the IP address of the client.
+func getClientIP(r *http.Request) string {
+	if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
+		return strings.SplitN(forwarded, ",", 2)[0]
+	}
+
+	return r.RemoteAddr
+}
+
+// getDeviceName extracts the device name from request headers or form values.
+func getDeviceName(r *http.Request) string {
+	deviceName := r.Header.Get("X-Device-Name")
+	if deviceName == "" {
+		deviceName = r.FormValue("device_name")
+	}
+	if deviceName == "" {
+		deviceName = "unknown"
+	}
+
+	return deviceName
+}
+
+// Response represents the structure of the outgoing messages.
+type Response struct {
+	Message string `json:"message"`
+	Success bool   `json:"success"`
+}
+
+func newResponse(msg string, suc bool) *Response {
+	return &Response{Message: msg, Success: suc}
 }

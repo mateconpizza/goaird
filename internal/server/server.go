@@ -115,5 +115,10 @@ func (s *Server) Start() error {
 
 // Shutdown gracefully shuts down the server.
 func (s *Server) Shutdown(ctx context.Context) error {
+	if !atomic.CompareAndSwapInt32(&s.isActive, 0, 1) {
+		slog.Debug("Server is not running")
+		return nil
+	}
+
 	return s.httpServer.Shutdown(ctx)
 }

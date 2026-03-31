@@ -83,6 +83,7 @@ func (s *MemoryStore) Delete(token string) error {
 }
 
 func (s *MemoryStore) Cleanup(interval time.Duration) {
+	// FIX: unnecessary?
 	// go store.Cleanup(5 * time.Minute)
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()

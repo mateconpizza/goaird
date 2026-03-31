@@ -6,13 +6,10 @@ import (
 	"crypto/rand"
 	"embed"
 	"encoding/base64"
-	"encoding/json"
-	"fmt"
 	"html/template"
 	"io/fs"
 	"net"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/mateconpizza/goairdrop/internal/application"
@@ -60,23 +57,8 @@ func New(app *application.App) (*Handler, error) {
 		return nil, err
 	}
 
-	f, _ := os.Open("/tmp/001/config.json")
-
-	defer func() {
-		if err := f.Close(); err != nil {
-			app.Logger.Error("failed closing config file", "error", err)
-		}
-	}()
-
-	var cfg application.Config
-	dec := json.NewDecoder(f)
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&cfg); err != nil {
-		return nil, fmt.Errorf("decode config: %w", err)
-	}
-
 	data := &TemplateData{
-		Cfg:       &cfg,
+		Cfg:       app.Cfg,
 		CSRFToken: csrfToken,
 		AppName:   app.Name,
 		AppVer:    app.Version,

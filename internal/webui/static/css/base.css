@@ -86,16 +86,6 @@ h3 {
   color: var(--text);
 }
 
-.section-title {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-light);
-  margin: var(--space-m) 0 var(--space-xs) 0;
-  border-top: 1px solid var(--border);
-  padding-top: var(--space-s);
-}
-
 label {
   display: block;
   font-size: var(--fs-s);
@@ -119,13 +109,6 @@ select {
 input[type="checkbox"] {
   width: auto;
   margin-right: var(--space-xs);
-}
-
-.checkbox-field {
-  display: flex;
-  align-items: center;
-  font-size: var(--fs-s);
-  color: var(--text-muted);
 }
 
 .hook {
@@ -184,6 +167,11 @@ button:hover {
 button:active {
   transform: translateY(0);
   box-shadow: var(--shadow-light);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 details.hook {
@@ -301,11 +289,6 @@ summary:hover .badge {
   text-rendering: optimizelegibility;
 }
 
-.badge-disabled {
-  background: var(--text-muted);
-  color: var(--bg);
-}
-
 .header {
   display: flex;
   align-items: center;
@@ -314,14 +297,12 @@ summary:hover .badge {
   padding: 0 var(--space-xxxs);
 }
 
-/* push form to the right */
 .user-login-form,
 .theme-toggle-form {
   margin: 0;
   display: flex;
 }
 
-/* reset default button/form styles */
 .btn-user,
 .theme-toggle {
   background: none;
@@ -330,7 +311,7 @@ summary:hover .badge {
   padding: 5px;
   display: flex;
   align-items: center;
-  color: inherit; /* Para que usen el color del texto actual */
+  color: inherit;
 }
 
 .btn-user svg,
@@ -340,7 +321,7 @@ summary:hover .badge {
   display: block;
 }
 
-.btn-container {
+.header-btn-container {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -351,33 +332,4 @@ summary:hover .badge {
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
-}
-
-.auth-icon {
-  color: var(--text);
-  margin-bottom: var(--space-m);
-}
-
-.input-login {
-  display: block;
-  width: 100%;
-  margin-bottom: var(--space-s);
-}
-
-.input-group {
-  margin-bottom: var(--space-m);
-}
-
-.auth-header {
-  text-align: center;
-  align-items: center;
-  margin-top: var(--space-l);
-  font-size: var(--fs-s);
-  opacity: 0.7;
-}
-
-.footer-text a {
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 600;
 }

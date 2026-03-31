@@ -69,13 +69,8 @@ func (m *Manager) NewUpload(h *Hook) http.HandlerFunc {
 			}
 		}
 
-		resp := Response{
-			Success: true,
-			Message: fmt.Sprintf("Successfully uploaded %d file(s)", len(files)),
-		}
-
+		resp := newResponse(fmt.Sprintf("Successfully uploaded %d file(s)", len(files)), true)
 		m.logger.Info(resp.Message)
-
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			m.logger.Error("Error encoding response", "error", err.Error())

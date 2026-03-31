@@ -47,7 +47,7 @@ func Auth(expectedToken, defaultToken string, next http.Handler, logger *slog.Lo
 				"path", r.URL.Path,
 				"ip", r.RemoteAddr,
 			)
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			http.Error(w, "unauthorized: request authenticated with default token", http.StatusUnauthorized)
 			return
 		}
 
