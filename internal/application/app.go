@@ -190,7 +190,7 @@ func (a *App) version() string {
 
 func (a *App) genCurl(args []string) error {
 	if len(args) == 0 {
-		fmt.Fprintf(a.Stdout, "%s: usage: gen <hook-name> or <hook-endpoint>\n", a.Name)
+		fmt.Fprintf(a.Stdout, "%s: usage: --gen <hook-name> or <hook-endpoint>\n", a.Name)
 		return nil
 	}
 
