@@ -18,7 +18,7 @@ type Middleware func(http.Handler, *slog.Logger) http.Handler
 type Server struct {
 	httpServer *http.Server
 	logger     *slog.Logger
-	isActive   int32
+	isActive   atomic.Bool
 }
 
 // ServerOptFn defines functional options for Server configuration.
@@ -96,29 +96,32 @@ func New(opts ...ServerOptFn) *Server {
 
 // Start starts the HTTP server.
 func (s *Server) Start() error {
-	if !atomic.CompareAndSwapInt32(&s.isActive, 0, 1) {
+	if !s.isActive.CompareAndSwap(false, true) {
 		return ErrServerAlreadyRunning
 	}
 
 	s.logger.Info("starting server", "addr", s.httpServer.Addr)
 
 	err := s.httpServer.ListenAndServe()
+
+	s.isActive.Store(false)
+
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		s.logger.Error("server start failed", "addr", s.httpServer.Addr, "error", err)
 		return err
 	}
 
 	s.logger.Info("server stopped")
-
 	return nil
 }
 
 // Shutdown gracefully shuts down the server.
 func (s *Server) Shutdown(ctx context.Context) error {
-	if !atomic.CompareAndSwapInt32(&s.isActive, 0, 1) {
-		slog.Debug("Server is not running")
+	if !s.isActive.CompareAndSwap(true, false) {
+		s.logger.Debug("server is not running or already shutting down")
 		return nil
 	}
 
+	s.logger.Info("shutting down gracefully...")
 	return s.httpServer.Shutdown(ctx)
 }
