@@ -15,11 +15,12 @@ import (
 
 const (
 	appName = "goaird"
-	version = "0.1.1"
+	version = "0.1.2"
+	repo    = "https://github.com/mateconpizza/goairdrop"
 )
 
 func main() {
-	app := application.New(appName, version)
+	app := application.New(appName, version, repo)
 	if err := app.Init(); err != nil {
 		cli.ErrAndExit(app.Name, err)
 	}

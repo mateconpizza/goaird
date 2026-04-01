@@ -157,10 +157,11 @@ button {
 }
 
 button:hover {
-  color: var(--text-on-accent);
+  color: var(--accent-light);
   background: var(--accent-hover);
   border-color: var(--accent-hover);
   transform: translateY(-1px);
+  font-weight: 600;
   box-shadow: var(--shadow-medium);
 }
 
@@ -210,6 +211,14 @@ details[open] summary {
 
 .hook-body {
   padding: var(--space-m);
+}
+
+.app-repo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .version {
@@ -303,15 +312,20 @@ summary:hover .badge {
   display: flex;
 }
 
-.btn-user,
-.theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  display: flex;
+.btn-src,
+.theme-toggle,
+.btn-user {
+  display: inline-flex;
   align-items: center;
-  color: inherit;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn-user {
+  padding: 0 var(--space-xs);
 }
 
 .btn-user svg,
@@ -321,11 +335,17 @@ summary:hover .badge {
   display: block;
 }
 
+.btn-src svg {
+  width: var(--space-x);
+  height: var(--space-x);
+  display: block;
+}
+
 .header-btn-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-xs);
-  margin-left: auto;
 }
 
 .auth-container form {

@@ -19,6 +19,7 @@ import (
 type App struct {
 	Name    string        // application name
 	Version string        // application version
+	RepoURL string        // application repository URL
 	cmd     string        // application subcommand
 	Flag    *arguments    // parsed command-line arguments
 	FlagSet *flag.FlagSet // command-line flag parser
@@ -227,11 +228,12 @@ func (a *App) printHook(args []string) error {
 	return nil
 }
 
-func New(name, version string) *App {
+func New(name, version, repo string) *App {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	return &App{
 		Name:         name,
 		Version:      version,
+		RepoURL:      repo,
 		Flag:         &arguments{},
 		Stdin:        os.Stdin,
 		Stdout:       os.Stdout,

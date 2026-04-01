@@ -28,6 +28,14 @@ I'm using [HTTP shortcuts](https://github.com/Waboodoo/HTTP-Shortcuts) on Androi
 
 Define hooks → send HTTP requests → execute actions locally.
 
+## Security
+
+> [!WARNING]
+> This daemon can execute local commands and write files.
+
+- Add a new token to the configuration file `$XDG_CONFIG_HOME/goaird/config.json`
+- Do not expose it to the public internet
+
 ## Configuration File Example (WIP)
 
 The daemon is configured via a JSON file that defines the server settings and a list of hooks. Each hook maps an HTTP endpoint to a specific action (e.g., file upload or command execution).
@@ -158,17 +166,6 @@ curl -X POST http://localhost:8080/images \
   -F "files=@./*.jpg"
 ```
 
-## Security
-
-> [!WARNING]
-> This daemon can execute local commands and write files.
-
-- Do not expose it to the public internet
-- Prefer binding to `127.0.0.1`
-- Use a firewall or reverse proxy if needed
-
-Authentication is currently not implemented.
-
 ## Roadmap
 
 - [ ] Authentication (token-based)
@@ -179,12 +176,12 @@ Authentication is currently not implemented.
 
 - [x] Hooks (type: command, upload)
   - [ ] Simple WebUI for hook's edition (access: `http://localhost:8080/config`)
-    <details>
-        <p align="center">
-            <img src="./assets/screenshot.png"
-            alt="Preview" style="width: 80%; max-width: 600px; height: auto;">
-        </p>
-    </details>
+  <details>
+      <p align="center">
+          <img src="./assets/screenshot.png"
+          alt="Preview" style="width: 80%; max-width: 600px; height: auto;">
+      </p>
+  </details>
 - [x] Send `text/files`
   - [ ] Filename strategy (UUID, timestamp, hash, original)
 - [x] Add logger

@@ -1,8 +1,14 @@
 {{ define "header" }}
 <span class="title">
-  goaird <span class="badge version">v{{ .AppVer }}</span> / hooks
+  {{ .AppName }} <span class="badge version">v{{ .AppVer }}</span>
 </span>
 <div class="header-btn-container">
+  <button class="btn-src" aria-label="Source code">
+    <a class="app-repo"
+       href={{ .AppRepo }}
+       target="_blank"
+       rel="noopener noreferrer">{{ template "svg-src" }}</a>
+  </button>
   <!-- toggle theme -->
   <form method="POST" action="/theme" class="theme-toggle-form">
     <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">

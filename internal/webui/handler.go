@@ -38,7 +38,24 @@ type TemplateData struct {
 	ThemeMode string // light | dark
 	AppName   string
 	AppVer    string
+	AppRepo   string
 	IsAuth    bool
+}
+
+func newTemplateData(app *application.App) (*TemplateData, error) {
+	csrfToken, err := NewCSRFToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return &TemplateData{
+		Cfg:       app.Cfg,
+		CSRFToken: csrfToken,
+		AppName:   app.Name,
+		AppVer:    app.Version,
+		AppRepo:   app.RepoURL,
+		IsAuth:    false,
+	}, nil
 }
 
 func New(app *application.App) (*Handler, error) {
@@ -52,17 +69,9 @@ func New(app *application.App) (*Handler, error) {
 		return nil, err
 	}
 
-	csrfToken, err := NewCSRFToken()
+	data, err := newTemplateData(app)
 	if err != nil {
 		return nil, err
-	}
-
-	data := &TemplateData{
-		Cfg:       app.Cfg,
-		CSRFToken: csrfToken,
-		AppName:   app.Name,
-		AppVer:    app.Version,
-		IsAuth:    false,
 	}
 
 	return &Handler{
