@@ -56,9 +56,9 @@ type command struct {
 
 func (a *App) commands() []command {
 	return []command{
-		{"hook", "H", "show hook details", &a.Flag.hook},
+		{"hook", "H", "show hook details <name>", &a.Flag.hook},
 		{"list", "l", "list hooks", &a.Flag.list},
-		{"gen", "g", "generate curl from hook", &a.Flag.generate},
+		{"gen", "g", "generate curl from hook <name>", &a.Flag.generate},
 		{"webui", "w", "enable web UI", &a.Flag.Webui},
 		{"version", "V", "print version", &a.Flag.version},
 		{"verbose", "v", "verbose output", &a.Flag.verbose},

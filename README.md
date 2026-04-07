@@ -1,5 +1,5 @@
 <div align="center">
-    <h1><b><span style="font-size: 0.8em">✈️</span> goairdrop</b></h1>
+    <h1><b><span style="font-size: 0.8em">✈️</span> goaird</b></h1>
     <span>HTTP endpoints to trigger local actions<b><span style="font-size: 0.8em"> <br>(🚧 WIP)</span></b></span>
 <br>
 <br>
@@ -35,6 +35,30 @@ Define hooks → send HTTP requests → execute actions locally.
 
 - Add a new token to the configuration file `$XDG_CONFIG_HOME/goaird/config.json`
 - Do not expose it to the public internet
+
+## Hook Types
+
+### `upload`
+
+Accepts `multipart/form-data` requests and stores files on disk.
+
+**Fields:**
+
+- `destination`: Target directory
+- `filename_strategy` (wip): How filenames are preserved or generated
+- `allowed_mime_types` (optional): Restrict accepted file types
+- `max_size_mb` (optional): Limit upload size
+
+### `command`
+
+Executes a local command using a templated payload.
+
+**Fields:**
+
+- `command_template.command`: Binary to execute
+- `command_template.args`: Arguments (supports templating, e.g. `{{payload.url}}`)
+- `timeout_seconds`: Execution timeout
+- `allowed_actions`: Whitelist of accepted actions from the request
 
 ## Configuration File Example (WIP)
 
@@ -119,30 +143,6 @@ The daemon is configured via a JSON file that defines the server settings and a 
 
 </details>
 
-## Hook Types
-
-### `upload`
-
-Accepts `multipart/form-data` requests and stores files on disk.
-
-**Fields:**
-
-- `destination`: Target directory
-- `filename_strategy` (wip): How filenames are preserved or generated
-- `allowed_mime_types` (optional): Restrict accepted file types
-- `max_size_mb` (optional): Limit upload size
-
-### `command`
-
-Executes a local command using a templated payload.
-
-**Fields:**
-
-- `command_template.command`: Binary to execute
-- `command_template.args`: Arguments (supports templating, e.g. `{{payload.url}}`)
-- `timeout_seconds`: Execution timeout
-- `allowed_actions`: Whitelist of accepted actions from the request
-
 ### Usage
 
 ```sh
@@ -150,9 +150,9 @@ $ goaird -h
 Usage: goaird [flag] [args]
 
 Flags:
-  -H, --hook         show hook details
+  -H, --hook         show hook details <name>
   -l, --list         list hooks
-  -g, --gen          generate curl from hook
+  -g, --gen          generate curl from hook <name>
   -w, --webui        enable web UI
   -V, --version      print version
   -v, --verbose      verbose output

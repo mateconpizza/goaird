@@ -273,6 +273,7 @@ func (h *Handler) RequireAuth(next http.Handler) http.Handler {
 }
 
 func (h *Handler) RotateSession(w http.ResponseWriter, r *http.Request) error {
+	// FIX: implement
 	oldToken, err := h.cookies.GetSession(r)
 	if err != nil {
 		return err
@@ -283,10 +284,8 @@ func (h *Handler) RotateSession(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	// borrar vieja
 	_ = h.sessions.Delete(oldToken)
 
-	// nueva
 	newToken, _ := NewSessionToken()
 
 	err = h.sessions.Create(user.UserID, newToken, time.Now().Add(cookie.Expiry24Hour))
