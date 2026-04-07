@@ -182,14 +182,14 @@ curl -X POST http://localhost:8080/images \
 
 ## Roadmap
 
-- [ ] Authentication (token-based)
+- [x] Authentication (token-based)
 - [ ] Web UI improvements
-- [ ] Hook validation and schema
+- [x] Hook validation and schema
 
 ## TO-DO:
 
 - [x] Hooks (type: command, upload)
-  - [ ] Simple WebUI for hook's edition (access: `http://localhost:8080/config`)
+  - [x] Simple WebUI for hook's edition (access: `http://localhost:8080/config`)
   <details>
       <p align="center">
           <img src="./assets/screenshot.png"
@@ -203,4 +203,4 @@ curl -X POST http://localhost:8080/images \
 - [ ] Add Auth/Security
   - [ ] Link with QR-Code?
 - [x] Linux notification
-  - [ ] Add action to notification?
+  - [x] Add action to notification?
